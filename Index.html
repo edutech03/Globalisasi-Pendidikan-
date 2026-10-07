@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Digital Interaktif: Globalisasi Pendidikan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0f172a',
+                            dark: '#1e293b',
+                            teal: '#0d9488',
+                            emerald: '#059669',
+                            gold: '#d97706',
+                            accent: '#3b82f6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-slate-950 pb-16 md:pb-0">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('hero')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-teal-500/20">
+                        <i class="fa-solid font-bold fa-globe text-slate-950 text-xl"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-wider text-white hidden sm:block">GLOBALISASI<span class="text-teal-400">EDU</span></span>
+                </div>
+
+                <!-- Nav Items -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
+                    <button onclick="switchTab('hero')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-hero"><i class="fa-solid fa-house"></i> Utama</button>
+                    <button onclick="switchTab('nota')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-nota"><i class="fa-solid fa-book-open"></i> Nota Lengkap</button>
+                    <button onclick="switchTab('hafalan')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-hafalan"><i class="fa-solid fa-brain"></i> Kad Hafalan (20)</button>
+                    <button onclick="switchTab('uji')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-uji"><i class="fa-solid fa-magnifying-glass"></i> Uji Kefahaman</button>
+                    <button onclick="switchTab('misi')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-misi"><i class="fa-solid fa-crosshairs text-amber-400"></i> Misi Pendidik</button>
+                    <button onclick="switchTab('pencapaian')" class="nav-btn px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-2" id="nav-pencapaian"><i class="fa-solid fa-trophy text-yellow-500"></i> Laporan</button>
+                </div>
+
+                <!-- Global Progress Indicator -->
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <div class="text-xs text-slate-400">Kemajuan Modul</div>
+                        <div class="text-sm font-bold text-teal-400" id="global-progress-text">0%</div>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center relative">
+                        <svg class="w-10 h-10 transform -rotate-90">
+                            <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="3" class="text-slate-700" fill="transparent"/>
+                            <circle id="progress-circle" cx="20" cy="20" r="16" stroke="currentColor" stroke-width="3" class="text-teal-400 transition-all duration-500" fill="transparent"/>
+                        </svg>
+                        <i class="fa-solid fa-graduation-cap text-xs absolute text-slate-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Bar (Bottom Bar) -->
+        <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around bg-slate-900 border-t border-slate-800 py-2 px-1 text-xs text-slate-400 backdrop-blur-lg bg-slate-900/95">
+            <button onclick="switchTab('hero')" class="flex flex-col items-center gap-1 p-1" id="mob-nav-hero"><i class="fa-solid fa-house"></i>Utama</button>
+            <button onclick="switchTab('nota')" class="flex flex-col items-center gap-1 p-1" id="mob-nav-nota"><i class="fa-solid fa-book-open"></i>Nota</button>
+            <button onclick="switchTab('hafalan')" class="flex flex-col items-center gap-1 p-1" id="mob-nav-hafalan"><i class="fa-solid fa-brain"></i>Hafal</button>
+            <button onclick="switchTab('uji')" class="flex flex-col items-center gap-1 p-1" id="mob-nav-uji"><i class="fa-solid fa-magnifying-glass"></i>Semak</button>
+            <button onclick="switchTab('misi')" class="flex flex-col items-center gap-1 p-1 text-amber-400" id="mob-nav-misi"><i class="fa-solid fa-crosshairs"></i>Misi</button>
+            <button onclick="switchTab('pencapaian')" class="flex flex-col items-center gap-1 p-1 text-yellow-500" id="mob-nav-pencapaian"><i class="fa-solid fa-trophy"></i>Skor</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ================= HERO / DASHBOARD ================= -->
+        <section id="sec-hero" class="tab-content space-y-8">
+            <div class="relative bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-2xl overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl space-y-6">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                        <i class="fa-solid fa-compass"></i> Modul Digital Interaktif Akademia
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                        Globalisasi Pendidikan: <span class="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">Misi Pendidik Global</span>
+                    </h1>
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Terokai dinamika globalisasi, implikasi ke atas warga pendidik, serta analisis falsafah epistemologi, ontologi, dan metodologi secara interaktif dan komprehensif.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="switchTab('nota')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-slate-950 font-bold shadow-lg shadow-teal-500/25 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Mula Meneroka Nota
+                        </button>
+                        <button onclick="switchTab('misi')" class="px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold border border-amber-500/30 transition flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad"></i> Uji Skor Misi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD STATS CARD -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-teal-400"></i> Status Pembelajaran Anda
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Kad Hafalan Dikuasai</div>
+                        <div class="text-2xl font-bold text-teal-400 mt-1" id="dash-flashcards">0 / 20</div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Purata Uji Kefahaman</div>
+                        <div class="text-2xl font-bold text-blue-400 mt-1" id="dash-quiz">0%</div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Skor Kebolehan Misi</div>
+                        <div class="text-2xl font-bold text-amber-400 mt-1" id="dash-score">0 / 100</div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Tahap Penguasaan</div>
+                        <div class="text-sm font-bold text-emerald-400 mt-2 truncate" id="dash-rank">Pendidik Baharu</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= NOTA LENGKAP (KAPASITI AKADEMIK PENUH) ================= -->
+        <section id="sec-nota" class="tab-content hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">📚 Nota Kurikulum Lengkap</h2>
+                    <p class="text-slate-400 text-sm">Kandungan akademik rasmi tanpa pemotongan isi.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <a href="#bab1" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Bab 1 (Konsep)</a>
+                    <a href="#bab2" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Bab 2 (Sejarah)</a>
+                    <a href="#bab3" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Bab 3 (4 Aspek)</a>
+                    <a href="#bab4" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Bab 4 (Implikasi)</a>
+                    <a href="#bab5" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Bab 5 (Falsafah)</a>
+                    <a href="#bab6" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-teal-500/20 hover:text-teal-400 transition">Kamus Istilah</a>
+                </div>
+            </div>
+
+            <!-- BAB 1 -->
+            <div id="bab1" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-md bg-teal-500/20 text-teal-400 font-bold text-sm">BAB 1</span>
+                    <h3 class="text-2xl font-bold text-white">Pengenalan Globalisasi Pendidikan</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-teal-400 font-bold flex items-center gap-2"><i class="fa-solid fa-globe"></i> Maksud Globalisasi</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Istilah globalisasi berasal daripada bahasa Inggeris <i>"globalization"</i> yang merujuk kepada kemunculan satu rangkaian antarabangsa yang menguasai sistem ekonomi dan sosial.
+                        </p>
+                        <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                            <li>Proses integrasi merentasi sempadan geografi dan politik.</li>
+                            <li>Melibatkan penyebaran pemikiran, budaya, teknologi, dan ekonomi secara global.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-teal-400 font-bold flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> Globalisasi Pendidikan</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Penggunaan terawal istilah ini dikesan dalam penerbitan <i>"Toward New Education"</i> (1930) untuk menggambarkan keseluruhan pengalaman manusia dalam bidang pendidikan.
+                        </p>
+                        <ul class="text-xs text-slate-400 space-y-1.5 list-disc list-inside">
+                            <li>Perkongsian maklumat, kurikulum, dan piawaian kualiti akademik secara global.</li>
+                            <li>Membolehkan proses pengajaran dan pembelajaran berlaku tanpa had lokasi fizikal.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAB 2 -->
+            <div id="bab2" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-md bg-indigo-500/20 text-indigo-400 font-bold text-sm">BAB 2</span>
+                    <h3 class="text-2xl font-bold text-white">Perkembangan & Sejarah Globalisasi Pendidikan</h3>
+                </div>
+                <div class="space-y-3">
+                    <div onclick="toggleAccordion('acc1')" class="cursor-pointer bg-slate-950 p-4 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition">
+                        <div class="flex justify-between items-center"><span class="font-bold text-indigo-400 text-sm"><i class="fa-solid fa-clock-rotate-left"></i> Era Awal & Agama (Pra-Moden)</span><i class="fa-solid fa-chevron-down text-xs text-slate-500"></i></div>
+                        <div id="acc1" class="mt-3 text-sm text-slate-300 hidden leading-relaxed border-t border-slate-800 pt-3">
+                            Penyebaran ilmu berlaku melalui penyebaran agama (Islam, Buddha, Kristian) merentasi benua. Institusi seperti Universiti Nalanda dan Universiti Al-Qarawiyyin menjadi pusat tumpuan pelajar merentasi wilayah antarabangsa.
+                        </div>
+                    </div>
+                    <div onclick="toggleAccordion('acc2')" class="cursor-pointer bg-slate-950 p-4 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition">
+                        <div class="flex justify-between items-center"><span class="font-bold text-indigo-400 text-sm"><i class="fa-solid fa-book"></i> Era Penerbitan "Toward New Education" (1930)</span><i class="fa-solid fa-chevron-down text-xs text-slate-500"></i></div>
+                        <div id="acc2" class="mt-3 text-sm text-slate-300 hidden leading-relaxed border-t border-slate-800 pt-3">
+                            Tahun 1930 merekodkan penggunaan rasmi istilah globalisasi dalam konteks pendidikan, mencetuskan kesedaran bahawa pembelajaran harus dihubungkan dengan pengalaman manusia sejagat.
+                        </div>
+                    </div>
+                    <div onclick="toggleAccordion('acc3')" class="cursor-pointer bg-slate-950 p-4 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition">
+                        <div class="flex justify-between items-center"><span class="font-bold text-indigo-400 text-sm"><i class="fa-solid fa-network-wired"></i> Era Teknologi Maklumat (1990-an & Pandangan Perkembangan)</span><i class="fa-solid fa-chevron-down text-xs text-slate-500"></i></div>
+                        <div id="acc3" class="mt-3 text-sm text-slate-300 hidden leading-relaxed border-t border-slate-800 pt-3">
+                            Perkins (1992) memperkenalkan gagasan bahawa teknologi merapatkan dunia menjadi <i>"Global Village"</i> (Perkampungan Global). Mahathir Mohamad (1992) menegaskan bahawa Teknologi Maklumat (IT) menukar kaedah P&P bilik darjah secara radikal.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAB 3 -->
+            <div id="bab3" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-md bg-blue-500/20 text-blue-400 font-bold text-sm">BAB 3</span>
+                    <h3 class="text-2xl font-bold text-white">4 Aspek Utama Globalisasi (Klasifikasi IMF 2000)</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-blue-400 font-bold block text-sm">1. Perdagangan & Urus Niaga</span>
+                        <p class="text-slate-300">Penjualan perkhidmatan pendidikan merentasi negara, franchise universiti, dan e-learning komersial.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-blue-400 font-bold block text-sm">2. Pergerakan Modal (FDI)</span>
+                        <p class="text-slate-300">Pelaburan asing dalam sektor pendidikan tinggi, penubuhan kampus cawangan universiti luar negara.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-blue-400 font-bold block text-sm">3. Pergerakan Manusia</span>
+                        <p class="text-slate-300">Mobiliti pelajar antarabangsa, pertukaran pensyarah/penyelidik, fenomena Brain Drain dan Brain Gain.</p>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-blue-400 font-bold block text-sm">4. Penyebaran Ilmu</span>
+                        <p class="text-slate-300">Akses terbuka kepada jurnal saintifik, pangkalan data penyelidikan, dan perpustakaan digital global.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAB 4 -->
+            <div id="bab4" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-sm">BAB 4</span>
+                    <h3 class="text-2xl font-bold text-white">Implikasi & Cabaran Warga Pendidik</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-emerald-400 font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check"></i> Implikasi Positif</h4>
+                        <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+                            <li><b>Pembelajaran Sepanjang Hayat:</b> Akses kursus dalam talian (MOOCs) tanpa had usia.</li>
+                            <li><b>Pensiswazahan Guru:</b> Peningkatan taraf akademik keguruan ke peringkat Ijazah Sarjana Muda dan Sarjana.</li>
+                            <li><b>Penguasaan Dwi-Bahasa:</b> Peningkatan daya saing guru melalui penguasaan Bahasa Inggeris sebagai bahasa ilmu global.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-rose-400 font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Cabaran Utama</h4>
+                        <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside leading-relaxed">
+                            <li><b>Brain Drain:</b> Penghijrahan pakar tempatan ke luar negara demi ganjaran lebih tinggi.</li>
+                            <li><b>Peminggiran BM:</b> Risiko pengaruh berlebihan Bahasa Inggeris mengikis Bahasa Melayu.</li>
+                            <li><b>Komersialisasi Pendidikan:</b> Risiko orientasi keuntungan mengatasi kualiti dan etika pendidikan.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAB 5 -->
+            <div id="bab5" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-md bg-purple-500/20 text-purple-400 font-bold text-sm">BAB 5</span>
+                    <h3 class="text-2xl font-bold text-white">Analisis Falsafah Pendidikan</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-2">
+                        <b class="text-purple-400 text-sm block">EPISTEMOLOGI</b>
+                        <p class="text-slate-300 leading-relaxed">Hakikat & Kesahihan Ilmu. Dalam era globalisasi, epistemologi fokus kepada keupayaan guru mendidik murid menapis maklumat palsu dan menilai kebenaran maklumat digital.</p>
+                    </div>
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-2">
+                        <b class="text-teal-400 text-sm block">ONTOLOGI</b>
+                        <p class="text-slate-300 leading-relaxed">Realiti Kewujudan. Mengkaji batas hubungan antara kewujudan fizikal (bilik darjah) dengan realiti maya (pembelajaran alam siber & metaverse).</p>
+                    </div>
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-2">
+                        <b class="text-amber-400 text-sm block">METODOLOGI</b>
+                        <p class="text-slate-300 leading-relaxed">Kaedah & Pendekatan Penyampaian. Peralihan daripada kaedah syarahan tradisional kepada e-learning, blended learning, dan bilik darjah pintar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAB 6 -->
+            <div id="bab6" class="scroll-mt-20 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <h3 class="text-2xl font-bold text-white">📖 Kamus Globalisasi Pendidikan</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="dictionary-grid"></div>
+            </div>
+        </section>
+
+
+        <!-- ================= KAD HAFALAN INTERAKTIF (20 KAD LENGKAP) ================= -->
+        <section id="sec-hafalan" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-3xl font-bold text-white">🧠 Kad Hafalan Interaktif 3D (20 Kad)</h2>
+                <p class="text-slate-400 text-sm">Semak semula 20 soalan teras kurikulum. Uji ingatan anda sebelum menterbalikkan kad!</p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400">Tapis Kategori:</span>
+                    <select id="card-category-filter" onchange="filterCards()" class="bg-slate-950 border border-slate-800 rounded-lg text-xs p-2 text-slate-200">
+                        <option value="ALL">Semua Kategori (20 Kad)</option>
+                        <option value="DEFINISI">🟢 DEFINISI</option>
+                        <option value="KONSEP">🔵 KONSEP</option>
+                        <option value="TOKOH">🟡 TOKOH / SUMBER</option>
+                        <option value="PERBANDINGAN">🟣 PERBANDINGAN</option>
+                        <option value="APLIKASI">🟠 APLIKASI</option>
+                        <option value="KBAT">🔴 KBAT</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-semibold">
+                    <span class="text-emerald-400" id="stat-mastered">✅ Dikuasai: 0</span>
+                    <span class="text-rose-400" id="stat-repeat">🔁 Perlu Ulang: 0</span>
+                    <button onclick="shuffleCards()" class="px-3 py-1.5 bg-slate-800 text-slate-200 rounded-lg"><i class="fa-solid fa-shuffle"></i> Rawak</button>
+                </div>
+            </div>
+
+            <div class="max-w-2xl mx-auto perspective-1000 min-h-[340px]">
+                <div id="flashcard-inner" class="relative w-full h-80 rounded-3xl transform-style-3d transition-transform duration-500 shadow-2xl border border-slate-800 cursor-pointer" onclick="flipCard()">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-8 flex flex-col justify-between backface-hidden border border-slate-800">
+                        <div class="flex justify-between items-center"><span id="fc-category-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-teal-500/20 text-teal-400">DEFINISI</span><span id="fc-counter" class="text-xs text-slate-500">Kad 1 / 20</span></div>
+                        <div class="text-center space-y-3 my-auto"><h3 id="fc-front-text" class="text-lg font-bold text-white leading-snug">Soalan...</h3></div>
+                        <div class="text-center text-xs text-teal-400 font-semibold"><i class="fa-solid fa-rotate"></i> Klik Untuk Terbalikkan Kad</div>
+                    </div>
+                    <div class="absolute inset-0 w-full h-full bg-slate-900 rounded-3xl p-8 flex flex-col justify-between backface-hidden rotate-y-180 border border-teal-500/40">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2"><span class="text-xs font-bold text-emerald-400"><i class="fa-solid fa-lightbulb"></i> Jawapan Akademi Terperinci</span></div>
+                        <p id="fc-back-text" class="text-xs text-slate-200 leading-relaxed overflow-y-auto my-auto pr-2">Jawapan...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-2xl mx-auto flex justify-between items-center">
+                <button onclick="prevCard()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm"><i class="fa-solid fa-arrow-left"></i> Sebelum</button>
+                <div class="flex gap-2">
+                    <button onclick="markCardStatus(false)" class="px-4 py-2 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-semibold">🔁 Perlu Ulang</button>
+                    <button onclick="markCardStatus(true)" class="px-4 py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-semibold">✅ Saya Faham</button>
+                </div>
+                <button onclick="nextCard()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-sm">Seterusnya <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </section>
+
+
+        <!-- ================= UJI KEFAHAMAN (DENGAN ULASAN JAWAPAN HEBAT) ================= -->
+        <section id="sec-uji" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-3xl font-bold text-white">🔍 Uji Kefahaman Diagnostik (4 Aktiviti)</h2>
+                <p class="text-slate-400 text-sm">Disokong ulasan jawapan beraras tinggi dan terperinci untuk mengukuhkan kefahaman akademik.</p>
+            </div>
+
+            <!-- AKTIVITI 1: PADANAN TOKOH -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-puzzle-piece text-teal-400"></i> Aktiviti 1: Padanan Tokoh & Sumber Konsep</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">1. Pengasas konsep "Global Village" (Perkampungan Global) yang menggambarkan ketiadaan sempadan akibat teknologi:</p>
+                        <select id="q-match-1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+                            <option value="">-- Pilih Jawapan --</option>
+                            <option value="wrong">Mahathir Mohamad</option>
+                            <option value="correct">Perkins (1992)</option>
+                            <option value="wrong">UNESCO</option>
+                        </select>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">2. Tokoh yang menegaskan bahawa Infotek mengubah proses P&P melampaui bilik darjah tradisional:</p>
+                        <select id="q-match-2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+                            <option value="">-- Pilih Jawapan --</option>
+                            <option value="correct">Mahathir Mohamad (1992)</option>
+                            <option value="wrong">Galhardi (1999)</option>
+                            <option value="wrong">Perkins (1992)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="checkQuiz1()" class="px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl text-xs">Semak Aktiviti 1</button>
+                <div id="quiz1-feedback" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2"></div>
+            </div>
+
+            <!-- AKTIVITI 2: KLASIFIKASI IMPLIKASI -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-blue-400"></i> Aktiviti 2: Klasifikasi Implikasi Globalisasi</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-slate-300 font-semibold block">Brain Drain (Pengaliran Pakar Luar)</span>
+                        <div class="flex gap-4">
+                            <label><input type="radio" name="class-1" value="positif" class="accent-teal-500"> Positif</label>
+                            <label><input type="radio" name="class-1" value="cabaran" class="accent-teal-500"> Cabaran</label>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <span class="text-slate-300 font-semibold block">Budaya Pembelajaran Sepanjang Hayat</span>
+                        <div class="flex gap-4">
+                            <label><input type="radio" name="class-2" value="positif" class="accent-teal-500"> Positif</label>
+                            <label><input type="radio" name="class-2" value="cabaran" class="accent-teal-500"> Cabaran</label>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="checkQuiz2()" class="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-slate-950 font-bold rounded-xl text-xs">Semak Aktiviti 2</button>
+                <div id="quiz2-feedback" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2"></div>
+            </div>
+
+            <!-- AKTIVITI 3: SOALAN OBJEKTIF (MCQ) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-circle-question text-amber-400"></i> Aktiviti 3: Soalan Objektif Analisis (MCQ)</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">1. Fenomena penarikan pakar luar negara atau kepulangan semula bakat tempatan dikenali sebagai:</p>
+                        <div class="space-y-1 text-xs text-slate-300">
+                            <label class="block"><input type="radio" name="mcq-1" value="A"> A. Brain Drain</label>
+                            <label class="block"><input type="radio" name="mcq-1" value="B"> B. Brain Gain</label>
+                            <label class="block"><input type="radio" name="mcq-1" value="C"> C. Over-territoriality</label>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">2. Apakah matlamat utama program Pensiswazahan Guru dalam mendepani arus globalisasi?</p>
+                        <div class="space-y-1 text-xs text-slate-300">
+                            <label class="block"><input type="radio" name="mcq-2" value="A"> A. Mengurangkan kos pentadbiran sekolah secara mendadak</label>
+                            <label class="block"><input type="radio" name="mcq-2" value="B"> B. Meningkatkan kualiti kelayakan akademik keguruan setaraf piawaian negara maju</label>
+                            <label class="block"><input type="radio" name="mcq-2" value="C"> C. Menggantikan peranan guru sepenuhnya dengan sistem kecerdasan buatan (AI)</label>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="checkQuiz3()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs">Semak Aktiviti 3</button>
+                <div id="quiz3-feedback" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2"></div>
+            </div>
+
+            <!-- AKTIVITI 4: ANALISIS FALSAFAH -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fa-solid fa-brain text-purple-400"></i> Aktiviti 4: Analisis Dimensi Falsafah</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">1. Seorang guru mendidik pelajar cara menilai kebenaran maklumat dalam talian menggunakan bukti saintifik. Dimensi falsafah yang terlibat ialah:</p>
+                        <select id="q-phil-1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+                            <option value="">-- Pilih Cabang Falsafah --</option>
+                            <option value="epistemologi">Epistemologi (Hakikat & Kesahihan Ilmu)</option>
+                            <option value="ontologi">Ontologi (Realiti Kewujudan)</option>
+                            <option value="metodologi">Metodologi (Kaedah Penyampaian)</option>
+                        </select>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <p class="text-slate-200">2. Pelaksanaan e-learning dan kelas dalam talian secara interaktif merujuk kepada perubahan dalam dimensi:</p>
+                        <select id="q-phil-2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+                            <option value="">-- Pilih Cabang Falsafah --</option>
+                            <option value="epistemologi">Epistemologi</option>
+                            <option value="ontologi">Ontologi</option>
+                            <option value="metodologi">Metodologi (Kaedah Penyampaian)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="checkQuiz4()" class="px-5 py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-xl text-xs">Semak Aktiviti 4</button>
+                <div id="quiz4-feedback" class="hidden p-4 rounded-xl border text-xs leading-relaxed space-y-2"></div>
+            </div>
+        </section>
+
+
+        <!-- ================= MISI PENDIDIK GLOBAL (SIMULASI KEPUTUSAN STRATEGIK) ================= -->
+        <section id="sec-misi" class="tab-content hidden space-y-8">
+            <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-slate-900 border border-amber-500/30 rounded-3xl p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            🎯 SIMULASI KEPUTUSAN STRATEGIK
+                        </span>
+                        <h2 class="text-3xl font-extrabold text-white mt-2">Misi Pendidik Global</h2>
+                        <p class="text-xs text-slate-400">Buat keputusan terbaik berdasarkan situasi. Markah dan analisis terperinci hanya didedahkan selepas keputusan dihantar.</p>
+                    </div>
+
+                    <!-- Live Score Box -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-amber-500/30 text-center min-w-[180px]">
+                        <div class="text-xs text-slate-400">Jumlah Skor Misi</div>
+                        <div class="text-3xl font-extrabold text-amber-400" id="mission-ability-score">0 / 100</div>
+                        <div class="text-[10px] text-teal-400 font-semibold mt-1" id="mission-status-label">Belum Bermula</div>
+                    </div>
+                </div>
+
+                <!-- Mission Stage Container -->
+                <div id="mission-card-container" class="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= REFLEKSI & PENCAPAIAN ================= -->
+        <section id="sec-pencapaian" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <h2 class="text-3xl font-bold text-white">🏆 Laporan Pencapaian & Refleksi</h2>
+                <p class="text-slate-400 text-sm">Semak rekod pencapaian, kumpul lencana akademik, dan isi refleksi kendiri.</p>
+            </div>
+
+            <!-- BADGES GRID -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-award text-yellow-500"></i> Lencana Pencapaian
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center" id="badges-grid"></div>
+            </div>
+
+            <!-- REFLECTION FORM -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-teal-400"></i> 🪞 Refleksi Pendidik Global
+                </h3>
+                <div class="space-y-4 text-sm">
+                    <div class="space-y-2">
+                        <label class="block font-semibold text-slate-200">1. Apakah satu cabaran globalisasi yang paling memberi kesan kepada pendidikan Malaysia? Mengapa?</label>
+                        <textarea id="ref-q1" onchange="saveReflection()" oninput="saveReflection()" class="w-full h-24 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-teal-500 outline-none" placeholder="Tulis pandangan anda di sini..."></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block font-semibold text-slate-200">2. Apakah tindakan strategik yang boleh anda lakukan untuk mengimbangi kemajuan teknologi & nilai etika?</label>
+                        <textarea id="ref-q2" onchange="saveReflection()" oninput="saveReflection()" class="w-full h-24 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-teal-500 outline-none" placeholder="Tulis tindakan anda di sini..."></textarea>
+                    </div>
+                </div>
+                <div class="text-xs text-emerald-400 font-semibold hidden" id="ref-saved-msg">✓ Refleksi berjaya disimpan!</div>
+            </div>
+
+            <!-- SUMMARY REPORT BOX -->
+            <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4">
+                <h3 class="text-lg font-bold text-white">📊 Ringkasan Laporan Terperinci</h3>
+                <div class="text-xs space-y-2 text-slate-300">
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span>Tahap Kebolehan:</span> <b class="text-emerald-400" id="rep-rank">Pendidik Baharu</b></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span>Kad Hafalan Dikuasai:</span> <b id="rep-cards">0 / 20</b></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span>Misi Diselesaikan:</span> <b id="rep-missions">0 / 5</b></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span>Skor Misi Pendidik:</span> <b id="rep-score">0 / 100</b></div>
+                </div>
+                <button onclick="resetAllProgress()" class="px-4 py-2 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-bold">
+                    <i class="fa-solid fa-trash-arrow-up"></i> Reset Semua Progress
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-auto border-t border-slate-800 bg-slate-900 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4">Modul Digital Interaktif Globalisasi Pendidikan &copy; 2026. Hak Cipta Terpelihara Akademia.</div>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ================= STATE MANAGEMENT ================= */
+        let state = {
+            cardIndex: 0,
+            masteredCards: [],
+            repeatCards: [],
+            currentCategory: 'ALL',
+            quizScores: { act1: 0, act2: 0, act3: 0, act4: 0 },
+            currentMission: 0,
+            missionScoresList: [null, null, null, null, null],
+            selectedStrategiesList: [null, null, null, null, null],
+            submittedMissions: [false, false, false, false, false],
+            reflections: { q1: '', q2: '' }
+        };
+
+        /* ================= DATA KAMUS LENGKAP ================= */
+        const dictionaryData = [
+            { term: 'Globalisasi', desc: 'Rangkaian antarabangsa menguasai sistem ekonomi, sosial dan pendidikan merentasi sempadan geografi.' },
+            { term: 'Perkampungan Global', desc: 'Gagasan di mana dunia disifatkan seperti sebuah kampung kecil akibat kepantasan komunikasi dan maklumat (Perkins, 1992).' },
+            { term: 'Brain Drain', desc: 'Penghijrahan tenaga pakar dan cendekiawan ke luar negara untuk peluang pekerjaan/ganjaran lebih baik.' },
+            { term: 'Brain Gain', desc: 'Penarikan pakar luar atau kepulangan semula bakat tempatan membawa ilmu dan pengalaman berharga.' },
+            { term: 'Epistemologi', desc: 'Cabang falsafah yang menilai sumber, hakikat, batas, dan kesahihan sesuatu ilmu pengetahuan.' },
+            { term: 'Ontologi', desc: 'Cabang falsafah berkenaan hakikat kewujudan dan realiti (fizikal lawan maya).' },
+            { term: 'Metodologi', desc: 'Sistem kaedah, pendekatan, dan teknik yang digunakan dalam penyampaian pengajaran.' }
+        ];
+
+        /* ================= DATA 20 KAD HAFALAN LENGKAP ================= */
+        const flashcardsData = [
+            { id: 1, cat: 'DEFINISI', q: 'Apakah maksud Globalisasi Pendidikan?', a: 'Proses penyatuan, penyebaran, dan integrasi norma, maklumat, serta kurikulum pendidikan merentasi sempadan antarabangsa yang dipacu oleh kemajuan teknologi.' },
+            { id: 2, cat: 'DEFINISI', q: 'Penerbitan terawal yang meletakkan istilah ini pada 1930?', a: 'Penerbitan bertajuk "Toward New Education" (1930) menggambarkan pengalaman pembelajaran manusia sejagat.' },
+            { id: 3, cat: 'KONSEP', q: 'Nyatakan 4 Aspek Utama Globalisasi mengikut IMF (2000).', a: '1. Perdagangan & Urus Niaga, 2. Pergerakan Modal (FDI), 3. Pergerakan Manusia (Migrasi), 4. Penyebaran Ilmu.' },
+            { id: 4, cat: 'TOKOH', q: 'Apakah sumbangan gagasan Perkins (1992)?', a: 'Memperkenalkan istilah "Global Village" (Perkampungan Global) akibat kemajuan teknologi komunikasi.' },
+            { id: 5, cat: 'TOKOH', q: 'Pandangan Tun Dr. Mahathir Mohamad (1992) berkenaan IT?', a: 'Infotek menukar kaedah pengajaran dan pembelajaran (P&P) secara radikal melampaui bilik darjah fizikal.' },
+            { id: 6, cat: 'PERBANDINGAN', q: 'Perbezaan antara Brain Drain dan Brain Gain?', a: 'Brain Drain ialah kerugian pakar tempatan yang berpindah ke luar negara, manakala Brain Gain ialah penarikan pakar luar/kepulangan bakat tempatan.' },
+            { id: 7, cat: 'APLIKASI', q: 'Apakah peranan Epistemologi dalam era maklumat digital?', a: 'Mendidik murid dan pendidik agar berkeupayaan menapis, menilai, serta memverifikasi kesahihan fakta daripada sumber internet.' },
+            { id: 8, cat: 'KBAT', q: 'Mengapa Ontologi menekankan sempadan fizikal tetap penting?', a: 'Kerana undang-undang, kedaulatan negara, serta etika tempatan tetap tertakluk kepada realiti fizikal walaupun internet tidak bersempadan.' },
+            { id: 9, cat: 'KONSEP', q: 'Apakah tujuan Pensiswazahan Guru?', a: 'Meningkatkan taraf akademik dan kualiti profesionalisme guru ke peringkat Ijazah Sarjana Muda demi memenuhi piawaian global.' },
+            { id: 10, cat: 'DEFINISI', q: 'Apakah maksud Komersialisasi Pendidikan?', a: 'Peralihan sektor pendidikan menjadi komoditi berorientasikan keuntungan dan pasaran antarabangsa.' },
+            { id: 11, cat: 'APLIKASI', q: 'Apakah maksud Blended Learning dalam Metodologi?', a: 'Gabungan pengajaran bersemuka secara fizikal dan pembelajaran dalam talian (e-learning).' },
+            { id: 12, cat: 'KBAT', q: 'Bagaimanakah Bahasa Melayu boleh dipelihara dalam arus globalisasi?', a: 'Melalui dasar Dwi-Bahasa seimbang: memperkasakan BM sebagai bahasa ilmu kebangsaan dan BI sebagai bahasa komunikasi antarabangsa.' },
+            { id: 13, cat: 'TOKOH', q: 'Apakah pandangan Galhardi (1999) mengenai mobiliti tenaga kerja?', a: 'Globalisasi mewujudkan keperluan kemahiran tinggi merentasi sempadan dan fleksibiliti tenaga kerja.' },
+            { id: 14, cat: 'KONSEP', q: 'Apakah MOOCs?', a: 'Massive Open Online Courses - kursus dalam talian berskala besar yang membuka akses pendidikan tinggi kepada sesiapa sahaja.' },
+            { id: 15, cat: 'DEFINISI', q: 'Apakah maksud Pembelajaran Sepanjang Hayat (Lifelong Learning)?', a: 'Pendekatan pembelajaran berterusan tanpa had umur untuk meningkatkan pengetahuan dan kemahiran diri.' },
+            { id: 16, cat: 'PERBANDINGAN', q: 'Bilik Darjah Tradisional vs Bilik Darjah Maya', a: 'Tradisional berpusatkan lokasi fizikal dan guru; Maya berasaskan fleksibiliti masa, ruang digital, dan akses berpusatkan murid.' },
+            { id: 17, cat: 'APLIKASI', q: 'Apakah peranan guru sebagai pereka bentuk pembelajaran (Learning Designer)?', a: 'Guru bukan lagi sekadar penyampai fakta, tetapi memudah cara (facilitator) dan merancang pengalaman pembelajaran interaktif.' },
+            { id: 18, cat: 'KBAT', q: 'Apakah risiko terbesar kebergantungan kepada AI dalam pendidikan?', a: 'Penghakisan pemikiran kritis, kebalikan etika akademik (plagiat), dan kelemahan integrasi kemanusiaan.' },
+            { id: 19, cat: 'KONSEP', q: 'Apakah Pelaburan Langsung Asing (FDI) dalam pendidikan?', a: 'Penubuhan cawangan universiti luar negara dan penyerapan modal asing dalam sektor institusi tempatan.' },
+            { id: 20, cat: 'DEFINISI', q: 'Apakah maksud Sempadan Maya (Virtual Borderlands)?', a: 'Ruang interaksi digital di mana budaya, maklumat, dan komunikasi berhubung tanpa halangan sempadan geografi.' }
+        ];
+
+        /* ================= DATA MISI SIMULASI (REALISTIK & BERARS TINGGI) ================= */
+        const missionsData = [
+            {
+                id: 1,
+                babRef: 'bab4',
+                topicTitle: 'Brain Drain / Kehilangan Tenaga Akademik',
+                title: 'MISI 1: KRISIS BRAIN DRAIN PENSYARAH PAKAR',
+                situation: 'Sebuah universiti awam tempatan mengalami masalah Brain Drain secara mendadak apabila 5 orang pensyarah pakar dalam bidang AI dan Teknologi Hijau menerima tawaran pekerjaan dari institusi terkemuka luar negara dengan pakej gaji 3 kali ganda. Kehilangan ini menjejaskan kualiti penyelidikan dan akreditasi program fakulti.',
+                options: [
+                    {
+                        title: 'Strategi 1: Kelonggaran Pangkat & Insentif Kewangan Dalaman',
+                        desc: 'Memberikan insentif kewangan tambahan khas serta kelonggaran syarat kenaikan pangkat secara dalaman untuk mempertahankan pensyarah pakar berkenaan.',
+                        score: 12,
+                        analysis: 'Strategi ini menyediakan penyelesaian sementara dan mampu menahan sebahagian pensyarah. Walau bagaimanapun, ia membebankan skema perbelanjaan fizikal institusi dan tidak menyelesaikan akar masalah keterbatasan ruang penyelidikan bertaraf antarabangsa.',
+                        suggestion: 'Sediakan bajet penyelidikan yang bersasar dan hubungkannya dengan kolaborasi industri supaya insentif tidak bergantung sepenuhnya kepada dana terhad universiti.'
+                    },
+                    {
+                        title: 'Strategi 2: Pakej Pembangunan Profesional & Ekosistem Pertukaran Antarabangsa',
+                        desc: 'Membina pakej pembangunan profesional berskala besar, kemudahan makmal lanjutan, serta mewujudkan jawatan penyelidik bersama (joint-appointment) dengan universiti antarabangsa demi mengekalkan jaringan ilmu (Brain Gain).',
+                        score: 20,
+                        analysis: 'Strategi ini sangat cemerlang kerana ia mengubah ancaman Brain Drain kepada Brain Gain. Pensyarah mendapat akses tahap antarabangsa tanpa perlu memutus ikatan dengan universiti tempatan, sekali gus meningkatkan kualiti akademik dan modal insan negara.',
+                        suggestion: 'Kekalkan pelaksanaan ekosistem kolaboratif ini dan perkukuhkan padanan dana (matching grant) bersama rakan industri antarabangsa.'
+                    },
+                    {
+                        title: 'Strategi 3: Penggantian Tenaga Akademik Baharu & Penstrukturan Pentadbiran',
+                        desc: 'Membiarkan pensyarah berkenaan berhijrah dan menumpukan sumber kewangan untuk merekrut pensyarah baharu serta merestruktur semula modul pengajaran.',
+                        score: 7,
+                        analysis: 'Strategi ini kurang sesuai kerana kehilangan pakar senior membawa bersama kepimpinan penyelidikan dan pangkalan data yang mengambil masa bertahun-tahun untuk dibina semula. Merekrut tenaga baharu tidak menyelesaikan kelemahan kepakaran dalam jangka pendek.',
+                        suggestion: 'Mewujudkan program mentoring sebelum pakar berlepas supaya pemindahan kepakaran (knowledge transfer) sempat berlaku kepada pensyarah muda.'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                babRef: 'bab4',
+                topicTitle: 'Bahasa Melayu & Identiti Pendidikan',
+                title: 'MISI 2: BAHASA MELAYU & IDENTITI PENDIDIKAN GLOBAL',
+                situation: 'Garis panduan penarafan universiti antarabangsa menggalakkan penggunaan 100% Bahasa Inggeris dalam pengajaran dan penulisan tesis untuk menarik pelajar antarabangsa. Walau bagaimanapun, tindakan ini mencetuskan kebimbangan peminggiran Bahasa Melayu sebagai bahasa ilmu kebangsaan dan penghakisan identiti tempatan.',
+                options: [
+                    {
+                        title: 'Strategi 1: Pengalihan 100% Bahasa Inggeris Sepenuhnya',
+                        desc: 'Menguatkuasakan Bahasa Inggeris secara menyeluruh dalam semua kursus akademik dan pentadbiran demi mengejar penarafan (ranking) universiti antarabangsa.',
+                        score: 6,
+                        analysis: 'Pilihan ini kurang sesuai kerana ia mengetepikan peranan Bahasa Melayu sebagai bahasa kebangsaan dan bahasa ilmu. Tindakan ini merosakkan identiti kebudayaan dan melemahkan pemahaman pelajar tempatan yang memerlukan integrasi konsep tempatan.',
+                        suggestion: 'Elakkan mengorbankan bahasa kebangsaan demi KPI penarafan semata-mata; integrasikan kriteria kebangsaan dalam dasar antarabangsa.'
+                    },
+                    {
+                        title: 'Strategi 2: Penguatkuasaan Bahasa Melayu Sahaja Tanpa Kompromi',
+                        desc: 'Mewajibkan penggunaan Bahasa Melayu dalam semua sesi kuliah dan menolak penawaran kursus berasaskan Bahasa Inggeris.',
+                        score: 10,
+                        analysis: 'Strategi ini memelihara Bahasa Melayu tetapi mengehadkan kualiti daya saing pelajar tempatan dalam arena antarabangsa serta menyukarkan proses integrasi dan pengambilan pelajar asing.',
+                        suggestion: 'Buka ruang kepada mod penyampaian dwibahasa agar pelajar tetap menguasai Bahasa Inggeris sebagai bahasa komunikasi global.'
+                    },
+                    {
+                        title: 'Strategi 3: Dasar Dual-Language & Islah Perterjemahan Ilmu Digital',
+                        desc: 'Melaksanakan model Dwi-Bahasa berasaskan konteks: Mempertahankan BM sebagai bahasa ilmu dan pengajian kebangsaan, sambil membenarkan BI dalam kursus teknikal antarabangsa serta mempergiat penterjemahan karya global ke BM.',
+                        score: 18,
+                        analysis: 'Strategi yang sangat baik kerana ia mengimbangi antara pemeliharaan jatidiri kebangsaan dengan keperluan kebolehpasaran global. Ia memperkasakan Bahasa Melayu secara dinamik melalui penterjemahan ilmu baharu.',
+                        suggestion: 'Tingkatkan kualiti penerbitan jurnal dwibahasa dan sediakan sokongan penterjemahan berteknologi untuk pensyarah.'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                babRef: 'bab5',
+                topicTitle: 'AI & Kesahihan Maklumat',
+                title: 'MISI 3: AI & KESAHIHAN MAKLUMAT (EPISTEMOLOGI)',
+                situation: 'Penggunaan Kecerdasan Buatan (AI) berkembang pesat dalam kalangan pelajar untuk menghasilkan kertas kerja dan tugasan. Namun, ujian diagnostik mendapati lebih 60% pelajar menerima bulat-bulat jawapan AI yang mengandungi fakta palsu (hallucinations) dan rujukan rekaan tanpa semakan kritikal.',
+                options: [
+                    {
+                        title: 'Strategi 1: Integrasi Kerangka Epistemologi Kritis & Audit Sumber AI',
+                        desc: 'Mewajibkan modul Epistemologi Kritis dan Literasi Digital: Pelajar dibenarkan menggunakan AI tetapi mesti menyerahkan analisis perbandingan, bukti semakan fakta (fact-checking), dan verifikasi sumber sah.',
+                        score: 20,
+                        analysis: 'Keputusan cemerlang. Berlandaskan dimensi Epistemologi, strategi ini tidak melari daripada teknologi sebaliknya mendidik pelajar menjadi penilai ilmu yang bijaksana, kritis, dan beretika dalam era maklumat digital.',
+                        suggestion: 'Kekalkan pendekatan ini dan bangunkan garis panduan etika penggunaan AI yang sentiasa dikemaskini mengikut perkembangan teknologi.'
+                    },
+                    {
+                        title: 'Strategi 2: Pengharaman Total Penggunaan Alat AI dalam Tugasan',
+                        desc: 'Melarang sebarang penggunaan perisian AI dalam tugasan akademik dan mengenakan tindakan disiplin kepada mana-mana pelajar yang dikesan menggunakan perisian berkenaan.',
+                        score: 8,
+                        analysis: 'Strategi kurang sesuai kerana pengharaman bersifat regresif dan sukar dikuatkuasakan secara fizikal. Ia mengasingkan pelajar daripada realiti dunia pekerjaan siber dan tidak membina kemahiran berfikir aras tinggi.',
+                        suggestion: 'Ubah strategi daripada menyekat teknologi kepada mengawal selia dan membimbing penggunaan secara beretika.'
+                    },
+                    {
+                        title: 'Strategi 3: Penggunaan Alat Pengesan AI (AI Detector) Sahaja',
+                        desc: 'Mewajibkan semua tugasan ditaruh menerusi perisian pengesan AI dan memotong markah secara automatik sekiranya skor persamaan melebihi julat tertentu.',
+                        score: 13,
+                        analysis: 'Strategi sederhana. Walaupun memberikan kawalan mekanikal, alat pengesan AI kerap memberikan keputusan positif palsu (false positives) dan tidak mengajar pelajar cara menilai kesahihan ilmu secara mendalam.',
+                        suggestion: 'Gunakan pengesan AI sebagai alat saringan awal sahaja, bukan sebagai kata putus penilaian akademik pelajar.'
+                    }
+                ]
+            },
+            {
+                id: 4,
+                babRef: 'bab4',
+                topicTitle: 'Komersialisasi Pendidikan & Kualiti Akademik',
+                title: 'MISI 4: KOMERSIALISASI VS KUALITI AKADEMIK',
+                situation: 'Pengurusan kewangan universiti mendesak fakulti menurunkan syarat kelayakan akademik kemasukan pelajar antarabangsa bagi melipatgandakan kutipan yuran pengajian. Dekan bimbang tindakan ini akan merosakkan reputasi kualiti akademik dan kadar kebolehpasaran graduan.',
+                options: [
+                    {
+                        title: 'Strategi 1: Menurunkan Syarat Kemasukan Demi Melipatgandakan Pendapatan',
+                        desc: 'Menerima syor pengurusan kewangan dengan menurunkan syarat kemasukan pelajar luar negara bagi menampung defisit kewangan institusi.',
+                        score: 5,
+                        analysis: 'Strategi kurang sesuai. Mengorbankan kualiti akademik demi keuntungan kewangan jangka pendek merosakkan kredibiliti, nilai ijazah, dan akreditasi universiti di peringkat antarabangsa.',
+                        suggestion: 'Komersialisasi mesti dipandu oleh nilai integriti akademik; cari sumber pendapatan ganti yang tidak menjejaskan piawaian.'
+                    },
+                    {
+                        title: 'Strategi 2: Mempertahankan Piawaian Kualiti & Membina Program Komersial Berimpak Tinggi',
+                        desc: 'Menolak penurunan syarat kemasukan, sebaliknya mempertahankan kualiti akreditasi rapat dan menjana pendapatan menerusi kursus eksekutif, latihan industri, dan pemindahan teknologi.',
+                        score: 19,
+                        analysis: 'Keputusan sangat cemerlang. Mempertahankan prinsip falsafah akademik sambil berfikiran kreatif dalam mencari alternatif perniagaan pendidikan berimpak tinggi tanpa mengorbankan taraf kualiti.',
+                        suggestion: 'Perkasakan jaringan alumni antarabangsa dan kolaborasi korporat untuk menaja dana biasiswa pelajar cemerlang.'
+                    },
+                    {
+                        title: 'Strategi 3: Mengurangkan Pengambilan Pelajar Asing dan Bergantung kepada Dana Kerajaan',
+                        desc: 'Mengecilkan kuota pelajar antarabangsa dan memohon penambahan subsidi secara berterusan daripada pihak kerajaan.',
+                        score: 11,
+                        analysis: 'Strategi sederhana. Ia menyelamatkan kualiti akademik tetapi mengurangkan pendedahan kepelbagaian antarabangsa di kampus dan tidak mampan dari segi autonomi kewangan.',
+                        suggestion: 'Tingkatkan kecekapan pengurusan dana dalaman dan elakkan kebergantungan penuh pada peruntukan awam.'
+                    }
+                ]
+            },
+            {
+                id: 5,
+                babRef: 'bab3',
+                topicTitle: 'Mobiliti & Integrasi Pelajar Antarabangsa',
+                title: 'MISI 5: MOBILITI & INTEGRASI PELAJAR ANTARABANGSA',
+                situation: 'Kemasukan 300 orang pelajar antarabangsa baharu dari pelbagai benua telah mencetuskan jurang sosial dan salah faham budaya di kampus. Pelajar tempatan dan pelajar antarabangsa dilihat membentuk kelompok berasingan (polarisasi) di dalam bilik darjah dan kolej kediaman.',
+                options: [
+                    {
+                        title: 'Strategi 1: Biarkan Interaksi Berlaku Secara Semula Jadi Tanpa Campur Tangan',
+                        desc: 'Menyerahkan proses asimilasi kepada kesediaan pelajar sendiri tanpa menganjurkan sebarang program khusus.',
+                        score: 6,
+                        analysis: 'Strategi kurang sesuai. Sikap pasif pengurusan membiarkan jurang sosial semakin meluas, menggalakkan prasangka, dan menggagalkan matlamat sebenar mobiliti antarabangsa.',
+                        suggestion: 'Tindakan proaktif diperlukan untuk memecahkan benteng perbezaan budaya di peringkat awal kemasukan.'
+                    },
+                    {
+                        title: 'Strategi 2: Program Mentor-Mentee Dwi-Budaya & Tugasan Kolaboratif Global',
+                        desc: 'Mewajibkan percampuran kumpulan dalam tugasan akademik, mewujudkan sistem buddy tempatan-antarabangsa, serta menganjurkan Karnival Perkampungan Global (Global Village) berkala.',
+                        score: 19,
+                        analysis: 'Keputusan sangat cemerlang. Mempraktikkan konsep Perkampungan Global (Perkins, 1992) secara inklusif. Ia memupuk kebolehan silang budaya, toleransi, dan rangkaian profesional antarabangsa.',
+                        suggestion: 'Sediakan platform refleksi berkala supaya sebarang isu kebudayaan dapat ditangani secara berhemah.'
+                    },
+                    {
+                        title: 'Strategi 3: Mensegregasikan Penempatan Kediaman dan Fasiliti Khusus',
+                        desc: 'Memisahkan kolej kediaman dan kemudahan sukan pelajar antarabangsa bagi mengelakkan pertembungan budaya.',
+                        score: 9,
+                        analysis: 'Strategi kurang sesuai. Wujud pengasingan (segregasi) yang menyukarkan proses integrasi dan mewujudkan tanggapan layan istimewa yang merenggangkan hubungan pelajar.',
+                        suggestion: 'Gunakan fasiliti bersama sebagai medium penyatuan, bukan mewujudkan jurang fizikal.'
+                    }
+                ]
+            }
+        ];
+
+        const badgesData = [
+            { id: 'b1', name: 'Pakar Globalisasi', icon: '🌍', desc: 'Meneroka nota akademik' },
+            { id: 'b2', name: 'Master Hafalan', icon: '🧠', desc: 'Kuasai >= 5 Kad Hafalan' },
+            { id: 'b3', name: 'Pemikir Kritis', icon: '🔎', desc: 'Selesaikan Uji Kefahaman' },
+            { id: 'b4', name: 'Pendidik Global', icon: '🌐', desc: 'Skor Misi >= 80/100' },
+            { id: 'b5', name: 'Pemimpin Beretika', icon: '⚖️', desc: 'Menyiapkan 5 Misi Simulasi' },
+            { id: 'b6', name: 'Reflektif Akademia', icon: '🪞', desc: 'Lengkapkan jawapan refleksi' }
+        ];
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            renderDictionary();
+            renderFlashcard();
+            renderMission();
+            renderBadges();
+            updateGlobalProgress();
+            switchTab('hero');
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-slate-800', 'text-white'));
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) activeNav.classList.add('bg-slate-800', 'text-white');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
+        }
+
+        function renderDictionary() {
+            const container = document.getElementById('dictionary-grid');
+            if (!container) return;
+            container.innerHTML = dictionaryData.map(item => `
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <h4 class="font-bold text-amber-400 text-sm">${item.term}</h4>
+                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">${item.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        /* ================= KAD HAFALAN LOGIC ================= */
+        function getFilteredCards() {
+            if (state.currentCategory === 'ALL') return flashcardsData;
+            return flashcardsData.filter(c => c.cat === state.currentCategory);
+        }
+
+        function renderFlashcard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            if (state.cardIndex >= cards.length) state.cardIndex = 0;
+
+            const card = cards[state.cardIndex];
+            document.getElementById('fc-category-badge').innerText = card.cat;
+            document.getElementById('fc-counter').innerText = `Kad ${state.cardIndex + 1} / ${cards.length}`;
+            document.getElementById('fc-front-text').innerText = card.q;
+            document.getElementById('fc-back-text').innerText = card.a;
+
+            const innerCard = document.getElementById('flashcard-inner');
+            if (innerCard) innerCard.classList.remove('rotate-y-180');
+
+            document.getElementById('stat-mastered').innerText = `✅ Dikuasai: ${state.masteredCards.length}`;
+            document.getElementById('stat-repeat').innerText = `🔁 Perlu Ulang: ${state.repeatCards.length}`;
+            document.getElementById('dash-flashcards').innerText = `${state.masteredCards.length} / 20`;
+            document.getElementById('rep-cards').innerText = `${state.masteredCards.length} / 20`;
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard-inner')?.classList.toggle('rotate-y-180');
+        }
+
+        function nextCard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            state.cardIndex = (state.cardIndex + 1) % cards.length;
+            renderFlashcard();
+        }
+
+        function prevCard() {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            state.cardIndex = (state.cardIndex - 1 + cards.length) % cards.length;
+            renderFlashcard();
+        }
+
+        function shuffleCards() {
+            flashcardsData.sort(() => Math.random() - 0.5);
+            state.cardIndex = 0;
+            renderFlashcard();
+        }
+
+        function filterCards() {
+            state.currentCategory = document.getElementById('card-category-filter').value;
+            state.cardIndex = 0;
+            renderFlashcard();
+        }
+
+        function markCardStatus(isMastered) {
+            const cards = getFilteredCards();
+            if (cards.length === 0) return;
+            const cardId = cards[state.cardIndex].id;
+
+            if (isMastered) {
+                if (!state.masteredCards.includes(cardId)) state.masteredCards.push(cardId);
+                state.repeatCards = state.repeatCards.filter(id => id !== cardId);
+            } else {
+                if (!state.repeatCards.includes(cardId)) state.repeatCards.push(cardId);
+                state.masteredCards = state.masteredCards.filter(id => id !== cardId);
+            }
+
+            saveToStorage();
+            nextCard();
+            updateGlobalProgress();
+        }
+
+        /* ================= UJI KEFAHAMAN LOGIC ================= */
+        function checkQuiz1() {
+            const q1 = document.getElementById('q-match-1').value;
+            const q2 = document.getElementById('q-match-2').value;
+            const fb = document.getElementById('quiz1-feedback');
+            fb.classList.remove('hidden');
+
+            if (q1 === 'correct' && q2 === 'correct') {
+                fb.className = 'p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>✓ Jawapan Cemerlang & Tepat (100%):</b><br>Perkins (1992) merintis gagasan "Global Village" dalam konteks hubungan antarabangsa, manakala Tun Dr. Mahathir Mohamad (1992) menekankan pemanfaatan Teknologi Maklumat bagi melonjakkan kaedah P&P negara.';
+                state.quizScores.act1 = 100;
+            } else {
+                fb.className = 'p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>❌ Jawapan Kurang Tepat:</b><br>Sila semak semula Bab 2. Perkins (1992) berkaitan Perkampungan Global, manakala Mahathir Mohamad (1992) menekankan impak Infotek dalam bilik darjah.';
+                state.quizScores.act1 = 0;
+            }
+            saveToStorage();
+            updateGlobalProgress();
+        }
+
+        function checkQuiz2() {
+            const c1 = document.querySelector('input[name="class-1"]:checked')?.value;
+            const c2 = document.querySelector('input[name="class-2"]:checked')?.value;
+            const fb = document.getElementById('quiz2-feedback');
+            fb.classList.remove('hidden');
+
+            if (c1 === 'cabaran' && c2 === 'positif') {
+                fb.className = 'p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>✓ Analisis Tepat:</b><br>Brain Drain merupakan cabaran besar (kehilangan pakar), manakala Pembelajaran Sepanjang Hayat ialah implikasi positif yang memperkasakan kualiti kendiri.';
+                state.quizScores.act2 = 100;
+            } else {
+                fb.className = 'p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>❌ Pengelasan Salah:</b><br>Brain Drain ialah cabaran ketara kepada pembangunan negara, manakala Pembelajaran Sepanjang Hayat ialah peluang positif.';
+                state.quizScores.act2 = 0;
+            }
+            saveToStorage();
+            updateGlobalProgress();
+        }
+
+        function checkQuiz3() {
+            const m1 = document.querySelector('input[name="mcq-1"]:checked')?.value;
+            const m2 = document.querySelector('input[name="mcq-2"]:checked')?.value;
+            const fb = document.getElementById('quiz3-feedback');
+            fb.classList.remove('hidden');
+
+            if (m1 === 'B' && m2 === 'B') {
+                fb.className = 'p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>✓ Jawapan Beraras Tinggi Tepat (100%):</b><br>Brain Gain merujuk kepada penarikan semula kepakaran berharga, manakala Pensiswazahan Guru bertujuan melonjakkan kualiti profesionalisme keguruan setaraf piawaian global.';
+                state.quizScores.act3 = 100;
+            } else {
+                fb.className = 'p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>❌ Jawapan Kurang Tepat:</b><br>Soalan 1: B (Brain Gain). Soalan 2: B (Peningkatan kualiti keguruan setaraf antarabangsa).';
+                state.quizScores.act3 = 0;
+            }
+            saveToStorage();
+            updateGlobalProgress();
+        }
+
+        function checkQuiz4() {
+            const p1 = document.getElementById('q-phil-1').value;
+            const p2 = document.getElementById('q-phil-2').value;
+            const fb = document.getElementById('quiz4-feedback');
+            fb.classList.remove('hidden');
+
+            if (p1 === 'epistemologi' && p2 === 'metodologi') {
+                fb.className = 'p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>✓ Ulasan Analisis Falsafah Sempurna:</b><br>Menyemak kesahihan maklumat berkaitan dengan Epistemologi (hakikat kebenaran ilmu), manakala penggunaan e-learning merupakan Metodologi (kaedah penyampaian).';
+                state.quizScores.act4 = 100;
+            } else {
+                fb.className = 'p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 text-rose-300 text-xs leading-relaxed space-y-1 block';
+                fb.innerHTML = '<b>❌ Jawapan Kurang Tepat:</b><br>Menilai kesahihan fakta = Epistemologi. Pendekatan e-learning = Metodologi.';
+                state.quizScores.act4 = 0;
+            }
+            saveToStorage();
+            updateGlobalProgress();
+        }
+
+        /* ================= MISI LOGIC (SIMULASI KEPUTUSAN STRATEGIK) ================= */
+        function getMissionLevelLabel(score) {
+            if (score <= 5) return { label: 'Kurang Sesuai', color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/30' };
+            if (score <= 10) return { label: 'Perlu Dipertingkatkan', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/30' };
+            if (score <= 15) return { label: 'Baik', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/30' };
+            if (score <= 18) return { label: 'Sangat Baik', color: 'text-teal-400', bg: 'bg-teal-500/10 border-teal-500/30' };
+            return { label: 'Cemerlang', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/30' };
+        }
+
+        function getOverallLevelLabel(totalScore) {
+            if (totalScore <= 39) return { title: 'Pendidik Baharu', desc: 'Masih memerlukan pengukuhan asas.', color: 'text-rose-400' };
+            if (totalScore <= 59) return { title: 'Pendidik Berkembang', desc: 'Sudah memahami asas tetapi masih perlu meningkatkan kemahiran membuat keputusan.', color: 'text-amber-400' };
+            if (totalScore <= 79) return { title: 'Pendidik Kompeten', desc: 'Mampu membuat keputusan yang sesuai dalam kebanyakan situasi.', color: 'text-orange-400' };
+            if (totalScore <= 89) return { title: 'Pendidik Global', desc: 'Mampu menganalisis isu pendidikan dalam konteks global.', color: 'text-teal-400' };
+            return { title: 'Pendidik Global Cemerlang', desc: 'Mampu membuat keputusan strategik, kritis dan berprinsip dalam menghadapi cabaran globalisasi pendidikan.', color: 'text-yellow-400' };
+        }
+
+        function calculateTotalMissionScore() {
+            let total = 0;
+            for (let i = 0; i < missionsData.length; i++) {
+                if (state.submittedMissions[i] && state.missionScoresList[i] !== null) {
+                    total += state.missionScoresList[i];
+                }
+            }
+            return total;
+        }
+
+        function renderMission() {
+            const container = document.getElementById('mission-card-container');
+            if (!container) return;
+
+            // Jika semua 5 misi telah diselesaikan (submitted)
+            const completedCount = state.submittedMissions.filter(Boolean).length;
+            
+            if (state.currentMission >= missionsData.length || completedCount === 5) {
+                renderMissionFinalAnalysis(container);
+                updateMissionUI();
+                return;
+            }
+
+            const mIdx = state.currentMission;
+            const mission = missionsData[mIdx];
+            const isSubmitted = state.submittedMissions[mIdx];
+            const selectedOptIdx = state.selectedStrategiesList[mIdx];
+
+            let html = `
+                <div class="space-y-6">
+                    <!-- Progress Bar Misi -->
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-400 border-b border-slate-800 pb-3">
+                        <span class="text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-flag"></i> Misi ${mIdx + 1} daripada ${missionsData.length}</span>
+                        <div class="flex gap-1.5">
+                            ${missionsData.map((_, i) => `
+                                <div class="w-6 h-2 rounded-full ${state.submittedMissions[i] ? 'bg-amber-400' : (i === mIdx ? 'bg-slate-500' : 'bg-slate-800')}"></div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- LANGKAH 1 — BACA SITUASI -->
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 inline-block">
+                            LANGKAH 1 — BACA SITUASI
+                        </span>
+                        <h3 class="text-xl font-bold text-white">${mission.title}</h3>
+                        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 text-sm text-slate-300 leading-relaxed space-y-2">
+                            <p>${mission.situation}</p>
+                        </div>
+                    </div>
+
+                    <!-- LANGKAH 2 — PILIH STRATEGI -->
+                    <div class="space-y-3">
+                        <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800 inline-block">
+                            LANGKAH 2 — PILIH STRATEGI
+                        </span>
+                        <p class="text-xs text-slate-400">Nilaikan pilihan di bawah dan pilih SATU strategi yang paling munasabah:</p>
+
+                        <div class="grid grid-cols-1 gap-3">
+                            ${mission.options.map((opt, idx) => {
+                                const isSelected = selectedOptIdx === idx;
+                                let cardBorder = 'border-slate-800 hover:border-slate-700 bg-slate-900';
+                                
+                                if (isSelected) {
+                                    cardBorder = 'border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/5';
+                                }
+
+                                return `
+                                    <div onclick="${isSubmitted ? '' : `selectStrategy(${idx})`}" 
+                                         class="${cardBorder} p-4 rounded-xl border transition cursor-pointer relative flex items-start gap-3">
+                                        <div class="mt-0.5">
+                                            <input type="radio" name="mission-opt-${mIdx}" ${isSelected ? 'checked' : ''} ${isSubmitted ? 'disabled' : ''} class="accent-amber-500 w-4 h-4 cursor-pointer">
+                                        </div>
+                                        <div class="space-y-1">
+                                            <h4 class="text-sm font-bold text-white">${opt.title}</h4>
+                                            <p class="text-xs text-slate-300 leading-relaxed">${opt.desc}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- LANGKAH 3 — HANTAR KEPUTUSAN -->
+                    ${!isSubmitted ? `
+                        <div class="pt-4 border-t border-slate-800 flex justify-end">
+                            <button onclick="submitMissionDecision()" 
+                                    ${selectedOptIdx === null ? 'disabled' : ''} 
+                                    class="px-6 py-3 rounded-xl font-bold text-xs transition flex items-center gap-2 ${selectedOptIdx !== null ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-lg shadow-amber-500/20' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}">
+                                <i class="fa-solid fa-paper-plane"></i> HANTAR KEPUTUSAN
+                            </button>
+                        </div>
+                    ` : ''}
+
+                    <!-- LANGKAH 4 — SELEPAS SUBMIT BARU DEDAHKAN MARKAH -->
+                    ${isSubmitted ? renderMissionFeedback(mIdx) : ''}
+                </div>
+            `;
+
+            container.innerHTML = html;
+            updateMissionUI();
+        }
+
+        function selectStrategy(optIdx) {
+            const mIdx = state.currentMission;
+            if (state.submittedMissions[mIdx]) return;
+
+            state.selectedStrategiesList[mIdx] = optIdx;
+            renderMission();
+        }
+
+        function submitMissionDecision() {
+            const mIdx = state.currentMission;
+            const selectedOptIdx = state.selectedStrategiesList[mIdx];
+            if (selectedOptIdx === null) return;
+
+            const opt = missionsData[mIdx].options[selectedOptIdx];
+            state.missionScoresList[mIdx] = opt.score;
+            state.submittedMissions[mIdx] = true;
+
+            saveToStorage();
+            renderMission();
+            updateGlobalProgress();
+        }
+
+        function renderMissionFeedback(mIdx) {
+            const mission = missionsData[mIdx];
+            const selectedOptIdx = state.selectedStrategiesList[mIdx];
+            const chosenOpt = mission.options[selectedOptIdx];
+            const score = chosenOpt.score;
+            const lvl = getMissionLevelLabel(score);
+
+            return `
+                <div class="mt-6 pt-6 border-t border-slate-800 space-y-6 animate-fadeIn">
+                    <div class="bg-slate-900 border ${lvl.bg} rounded-2xl p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
+                            <h4 class="text-lg font-extrabold text-white flex items-center gap-2">
+                                🎯 KEPUTUSAN MISI ${mIdx + 1}
+                            </h4>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-950 ${lvl.color} border border-slate-800 uppercase">
+                                    🟢 ${lvl.label}
+                                </span>
+                                <span class="text-xl font-black text-amber-400">
+                                    SKOR: ${score} / 20
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-slate-300 space-y-1">
+                            <span class="text-slate-500 font-semibold">Strategi Pilihan Anda:</span>
+                            <p class="font-bold text-white text-sm">${chosenOpt.title}</p>
+                        </div>
+
+                        <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <h5 class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-info"></i> Mengapa anda mendapat skor ini? (Analisis Keputusan)
+                            </h5>
+                            <p class="text-xs text-slate-300 leading-relaxed">${chosenOpt.analysis}</p>
+                        </div>
+
+                        <div class="space-y-1 text-xs text-slate-300">
+                            <span class="font-bold text-teal-400 flex items-center gap-1">
+                                <i class="fa-solid fa-lightbulb"></i> Cadangan Penambahbaikan Keputusan:
+                            </span>
+                            <p class="leading-relaxed text-slate-300">${chosenOpt.suggestion}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <a href="#${mission.babRef}" onclick="switchTab('nota')" class="text-xs text-teal-400 hover:underline font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-book"></i> ULANG KAJI TOPIK (${mission.topicTitle})
+                        </a>
+                        <button onclick="nextMissionStep()" class="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-slate-950 font-bold rounded-xl text-xs transition flex items-center gap-2">
+                            ${mIdx < missionsData.length - 1 ? 'Misi Seterusnya <i class="fa-solid fa-arrow-right"></i>' : 'Lihat Analisis Keseluruhan <i class="fa-solid fa-trophy"></i>'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function nextMissionStep() {
+            state.currentMission++;
+            renderMission();
+        }
+
+        function renderMissionFinalAnalysis(container) {
+            const totalScore = calculateTotalMissionScore();
+            const levelInfo = getOverallLevelLabel(totalScore);
+
+            // Cari Kekuatan dan Perlu Dipertingkatkan
+            let highestIdx = 0;
+            let lowestIdx = 0;
+            let highestScore = -1;
+            let lowestScore = 999;
+
+            for (let i = 0; i < missionsData.length; i++) {
+                const sc = state.missionScoresList[i] || 0;
+                if (sc > highestScore) {
+                    highestScore = sc;
+                    highestIdx = i;
+                }
+                if (sc < lowestScore) {
+                    lowestScore = sc;
+                    lowestIdx = i;
+                }
+            }
+
+            container.innerHTML = `
+                <div class="space-y-6 text-center py-4">
+                    <div class="inline-block p-4 rounded-full bg-amber-500/10 border border-amber-500/30 text-4xl mb-2">
+                        🏆
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">ANALISIS KESELURUHANI PENDIDIK GLOBAL</span>
+                        <h3 class="text-3xl font-black text-white mt-1">Skor Akhir: <span class="text-amber-400">${totalScore} / 100</span></h3>
+                        <p class="text-lg font-bold ${levelInfo.color} mt-1">${levelInfo.title}</p>
+                    </div>
+
+                    <p class="text-xs text-slate-300 max-w-xl mx-auto leading-relaxed bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        ${levelInfo.desc}
+                    </p>
+
+                    <!-- PECAHAN PRESTASI MISI -->
+                    <div class="text-left bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 max-w-2xl mx-auto">
+                        <h4 class="text-sm font-bold text-white border-b border-slate-800 pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-bar text-teal-400"></i> Pecahan Prestasi Misi
+                        </h4>
+
+                        <div class="space-y-2 text-xs">
+                            ${missionsData.map((m, idx) => {
+                                const sc = state.missionScoresList[idx] || 0;
+                                return `
+                                    <div class="flex justify-between items-center bg-slate-950 p-3 rounded-lg border border-slate-800">
+                                        <span class="text-slate-300 font-semibold">${m.topicTitle}</span>
+                                        <span class="font-bold text-amber-400">${sc} / 20</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- KEKUATAN & PERLU DIPERTINGKATKAN -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div class="bg-emerald-950/20 border border-emerald-500/30 p-4 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                                    💪 Kekuatan Utama
+                                </span>
+                                <p class="text-xs text-slate-200 font-medium">${missionsData[highestIdx].topicTitle} (${highestScore}/20)</p>
+                            </div>
+
+                            <div class="bg-rose-950/20 border border-rose-500/30 p-4 rounded-xl space-y-1">
+                                <span class="text-xs font-bold text-rose-400 flex items-center gap-1.5">
+                                    📚 Perlu Dipertingkatkan
+                                </span>
+                                <p class="text-xs text-slate-200 font-medium">${missionsData[lowestIdx].topicTitle} (${lowestScore}/20)</p>
+                                <a href="#${missionsData[lowestIdx].babRef}" onclick="switchTab('nota')" class="inline-block text-[10px] text-teal-400 hover:underline pt-1">
+                                    📖 ULANG KAJI TOPIK INI &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-center gap-4">
+                        <button onclick="resetMissions()" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Reset & Ulang Semula Misi
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetMissions() {
+            state.currentMission = 0;
+            state.missionScoresList = [null, null, null, null, null];
+            state.selectedStrategiesList = [null, null, null, null, null];
+            state.submittedMissions = [false, false, false, false, false];
+
+            saveToStorage();
+            renderMission();
+            updateGlobalProgress();
+        }
+
+        function updateMissionUI() {
+            const totalScore = calculateTotalMissionScore();
+            document.getElementById('mission-ability-score').innerText = `${totalScore} / 100`;
+            document.getElementById('dash-score').innerText = `${totalScore} / 100`;
+            document.getElementById('rep-score').innerText = `${totalScore} / 100`;
+
+            const completedCount = state.submittedMissions.filter(Boolean).length;
+            document.getElementById('rep-missions').innerText = `${completedCount} / 5`;
+
+            const lvl = getOverallLevelLabel(totalScore);
+            document.getElementById('mission-status-label').innerText = lvl.title;
+            document.getElementById('dash-rank').innerText = lvl.title;
+            document.getElementById('rep-rank').innerText = lvl.title;
+        }
+
+        /* ================= REFLEKSI & BADGES ================= */
+        function renderBadges() {
+            const container = document.getElementById('badges-grid');
+            if (!container) return;
+            const totalMissionScore = calculateTotalMissionScore();
+
+            container.innerHTML = badgesData.map(b => {
+                let unlocked = false;
+                if (b.id === 'b1') unlocked = true;
+                if (b.id === 'b2' && state.masteredCards.length >= 5) unlocked = true;
+                if (b.id === 'b3' && (state.quizScores.act1 + state.quizScores.act2 + state.quizScores.act3 + state.quizScores.act4) >= 200) unlocked = true;
+                if (b.id === 'b4' && totalMissionScore >= 80) unlocked = true;
+                if (b.id === 'b5' && state.submittedMissions.filter(Boolean).length >= 5) unlocked = true;
+                if (b.id === 'b6' && (state.reflections.q1 || state.reflections.q2)) unlocked = true;
+
+                return `
+                    <div class="bg-slate-950 p-4 rounded-xl border ${unlocked ? 'border-yellow-500/50 opacity-100' : 'border-slate-800 opacity-40'} flex flex-col items-center gap-2 transition">
+                        <div class="text-3xl">${b.icon}</div>
+                        <div class="font-bold text-xs text-white">${b.name}</div>
+                        <div class="text-[10px] text-slate-500 leading-tight">${b.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveReflection() {
+            state.reflections.q1 = document.getElementById('ref-q1').value;
+            state.reflections.q2 = document.getElementById('ref-q2').value;
+
+            saveToStorage();
+            const msg = document.getElementById('ref-saved-msg');
+            if (msg) {
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 3000);
+            }
+            renderBadges();
+            updateGlobalProgress();
+        }
+
+        /* ================= STORAGE & FORMULA PERSENTAJ TEPAT ================= */
+        function updateGlobalProgress() {
+            const cardPct = (state.masteredCards.length / 20) * 30; // 30%
+            
+            const totalQuizScore = state.quizScores.act1 + state.quizScores.act2 + state.quizScores.act3 + state.quizScores.act4; // max 400
+            const quizPct = (totalQuizScore / 400) * 30; // 30%
+
+            const totalMissionScore = calculateTotalMissionScore(); // max 100
+            const missionPct = (totalMissionScore / 100) * 30; // 30%
+
+            const refPct = (state.reflections.q1 || state.reflections.q2) ? 10 : 0; // 10%
+
+            const total = Math.min(100, Math.round(cardPct + quizPct + missionPct + refPct));
+
+            document.getElementById('global-progress-text').innerText = `${total}%`;
+            document.getElementById('dash-quiz').innerText = `${Math.round((totalQuizScore/400)*100)}%`;
+
+            // SVG PROGRESS CIRCLE
+            const circle = document.getElementById('progress-circle');
+            if (circle) {
+                const circumference = 2 * Math.PI * 16; // ≈ 100.53
+                circle.style.strokeDasharray = `${circumference}`;
+                const offset = circumference - (total / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+            }
+
+            renderBadges();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('edu_global_state_v3', JSON.stringify(state));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('edu_global_state_v3');
+            if (saved) {
+                try {
+                    state = { ...state, ...JSON.parse(saved) };
+                    if (state.reflections) {
+                        if (document.getElementById('ref-q1')) document.getElementById('ref-q1').value = state.reflections.q1 || '';
+                        if (document.getElementById('ref-q2')) document.getElementById('ref-q2').value = state.reflections.q2 || '';
+                    }
+                } catch (e) {
+                    console.error('Storage load failed', e);
+                }
+            }
+        }
+
+        function resetAllProgress() {
+            if (confirm('Adakah anda pasti untuk reset semua rekod & skor?')) {
+                localStorage.removeItem('edu_global_state_v3');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
